@@ -115,6 +115,7 @@ public class BluetoothChatFragment extends Fragment {
         } else if (mChatService == null) {
             setupChat();
         }
+        activityRequest(REQUEST_CONNECT_DEVICE_SECURE,Activity.RESULT_OK,getActivity().getIntent());
     }
 
     @Override
@@ -326,7 +327,7 @@ public class BluetoothChatFragment extends Fragment {
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void activityRequest(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect

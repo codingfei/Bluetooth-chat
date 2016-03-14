@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ViewAnimator;
 
 import com.ckt.yzf.bluetoothchat.R;
 import com.ckt.yzf.bluetoothchat.common.activities.SampleActivityBase;
@@ -32,11 +31,11 @@ import com.ckt.yzf.bluetoothchat.common.logger.MessageOnlyLogFilter;
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
  * {@link android.support.v4.app.Fragment} which can display a view.
- * <p>
+ * <p/>
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
-public class MainActivity extends SampleActivityBase {
+public class ConversationActivity extends SampleActivityBase {
 
     public static final String TAG = "MainActivity";
 
@@ -73,7 +72,9 @@ public class MainActivity extends SampleActivityBase {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Create a chain of targets that will receive log data */
+    /**
+     * Create a chain of targets that will receive log data
+     */
     @Override
     public void initializeLogging() {
         // Wraps Android's native log framework.

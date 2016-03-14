@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
  Copyright 2014 The Android Open Source Project
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +15,15 @@
 -->
 
 <manifest
-    package="com.ckt.yzf.bluetoothchat"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ckt.yzf.bluetoothchat"
     android:versionCode="1"
     android:versionName="1.0">
 
     <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
 
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -33,19 +32,20 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".bluetoothchat.MainActivity"
+            android:name=".bluetoothchat.ConversationActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name"></activity>
 
         <activity
             android:name=".bluetoothchat.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/select_device" />
+            android:label="@string/select_device">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        >
 
     </application>
 
