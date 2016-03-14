@@ -45,8 +45,7 @@
         <activity
             android:name=".bluetoothchat.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/select_device"
-            android:theme="@android:style/Theme.Holo.Dialog"/>
+            android:label="@string/select_device" />
 
     </application>
 
