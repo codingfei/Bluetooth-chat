@@ -43,7 +43,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.yzf.bluetoothchat.R;
+import com.ckt.yzf.bluetoothchat.assistant.ConversationListAdapter;
 import com.ckt.yzf.bluetoothchat.common.logger.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -59,9 +64,19 @@ public class BluetoothChatFragment extends Fragment {
 
     // Layout Views
     private ListView mConversationView;
+    private TextView  mListItem;
     private EditText mOutEditText;
     private Button mSendButton;
 
+    ArrayList<HashMap<String,Object>>  chatList=null;
+    String[] from={"image","text"};
+    int[] to={R.id.chatlist_image_me,R.id.chatlist_text_me,R.id.chatlist_image_other,R.id.chatlist_text_other};
+    int[] layout={R.layout.send_list_item,R.layout.reveive_list_item};
+    String userQQ=null;
+
+
+    public final static int OTHER=1;
+    public final static int ME=0;
     /**
      * Name of the connected device
      */
@@ -70,7 +85,7 @@ public class BluetoothChatFragment extends Fragment {
     /**
      * Array adapter for the conversation thread
      */
-    private ArrayAdapter<String> mConversationArrayAdapter;
+    private ConversationListAdapter mConversationArrayAdapter;
 
     /**
      * String buffer for outgoing messages
@@ -93,7 +108,7 @@ public class BluetoothChatFragment extends Fragment {
         setHasOptionsMenu(true);
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+        chatList = new ArrayList<HashMap<String, Object>>();
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             FragmentActivity activity = getActivity();
@@ -150,9 +165,9 @@ public class BluetoothChatFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mConversationView = (ListView) view.findViewById(R.id.in);
-        mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
-        mSendButton = (Button) view.findViewById(R.id.button_send);
+        mConversationView = (ListView) view.findViewById(R.id.chat_list);
+        mOutEditText = (EditText) view.findViewById(R.id.chat_bottom_edittext);
+        mSendButton = (Button) view.findViewById(R.id.chat_bottom_sendbutton);
     }
 
     /**
@@ -162,8 +177,7 @@ public class BluetoothChatFragment extends Fragment {
         Log.d(TAG, "setupChat()");
 
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
-
+        mConversationArrayAdapter = new ConversationListAdapter(getActivity(),chatList,layout,from,to);
         mConversationView.setAdapter(mConversationArrayAdapter);
 
         // Initialize the compose field with a listener for the return key
@@ -175,7 +189,7 @@ public class BluetoothChatFragment extends Fragment {
                 // Send a message using content of the edit text widget
                 View view = getView();
                 if (null != view) {
-                    TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
+                    TextView textView = (TextView) view.findViewById(R.id.chat_bottom_edittext);
                     String message = textView.getText().toString();
                     sendMessage(message);
                 }
@@ -286,7 +300,8 @@ public class BluetoothChatFragment extends Fragment {
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
+                            chatList.clear();
+                            mConversationArrayAdapter.notifyDataSetChanged();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
@@ -301,13 +316,23 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    HashMap<String,Object> map = new HashMap<String, Object>();
+                    map.put("person",ME);
+                    map.put("image",R.drawable.ic_launcher);
+                    map.put("text",writeMessage);
+                    chatList.add(map);
+                    mConversationArrayAdapter.notifyDataSetChanged();
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    HashMap<String,Object> map1 = new HashMap<String, Object>();
+                    map1.put("person",OTHER);
+                    map1.put("image",R.drawable.ic_launcher);
+                    map1.put("text",readMessage);
+                    chatList.add(map1);
+                    mConversationArrayAdapter.notifyDataSetChanged();
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
