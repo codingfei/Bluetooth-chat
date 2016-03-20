@@ -12,19 +12,11 @@
         android:layout_alignParentBottom="true">
 
         <ImageButton
-            android:id="@+id/chat_bottom_look"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_launcher"
-            android:layout_weight="3.5"
-            android:layout_marginLeft="7dip"
-            android:layout_marginTop="3dip" />
-        <ImageButton
             android:id="@+id/chat_bottom_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3.5"
-            android:background="@drawable/ic_launcher"
+            android:background="@drawable/add"
             android:layout_marginLeft="7dip"
             android:layout_marginTop="3dip" />
         <EditText
@@ -39,10 +31,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3.2"
-            android:layout_marginRight="4dip"
-            android:layout_marginBottom="3dip"
             android:text="发送"
-            android:textColor="@android:color/white"/>
+            android:textSize="@dimen/margin_medium"
+            android:background="#E5E5E5"
+            android:textColor="@android:color/black"/>
     </LinearLayout>
     <ListView
         android:id="@+id/chat_list"
