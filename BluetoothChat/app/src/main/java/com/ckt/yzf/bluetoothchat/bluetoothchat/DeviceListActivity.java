@@ -183,8 +183,6 @@ public class DeviceListActivity extends Activity {
             Intent intent = new Intent(getApplication(),ConversationActivity.class);
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
             startActivity(intent);
-            // Set result and finish this Activity
-            finish();
         }
     };
 
