@@ -65,10 +65,6 @@ public class DeviceListActivity extends Activity {
      */
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
 
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,10 +176,11 @@ public class DeviceListActivity extends Activity {
             String address = info.substring(info.length() - 17);
 
             // Create the result Intent and include the MAC address
-            Intent intent = new Intent(getApplication(),ConversationActivity.class);
+            Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-            startActivity(intent);
+
             // Set result and finish this Activity
+            setResult(Activity.RESULT_OK, intent);
             finish();
         }
     };
