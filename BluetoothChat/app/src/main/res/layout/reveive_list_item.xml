@@ -22,9 +22,9 @@
         android:layout_toRightOf="@id/chatlist_image_other"
         android:layout_alignTop="@id/chatlist_image_other"
         android:text="hewdfb"
-        android:background="@drawable/chatfrom_bg"
+        android:background="@drawable/ic_launcher"
         android:paddingTop="13dip"
-        android:paddingBottom="18dip"/>
+        android:paddingBottom="18dip"      />
 
 
 
