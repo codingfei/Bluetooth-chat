@@ -268,7 +268,7 @@ public class BluetoothChatFragment extends Fragment {
         if (null == actionBar) {
             return;
         }
-        actionBar.setTitle(resId);
+        actionBar.setSubtitle(resId);
     }
 
     /**
@@ -285,7 +285,7 @@ public class BluetoothChatFragment extends Fragment {
         if (null == actionBar) {
             return;
         }
-        actionBar.setTitle(subTitle);
+        actionBar.setSubtitle(subTitle);
     }
 
     /**
@@ -299,7 +299,7 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
-                            setStatus(mConnectedDeviceName);
+                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                             chatList.clear();
                             mConversationArrayAdapter.notifyDataSetChanged();
                             break;
