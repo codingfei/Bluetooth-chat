@@ -16,10 +16,14 @@
 
 package com.ckt.yzf.bluetoothchat.bluetoothchat;
 
+import android.app.TaskStackBuilder;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.ckt.yzf.bluetoothchat.R;
 import com.ckt.yzf.bluetoothchat.common.activities.SampleActivityBase;
@@ -69,21 +73,12 @@ public class ConversationActivity extends SampleActivityBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Create a chain of targets that will receive log data
-     */
-    @Override
-    public void initializeLogging() {
-        // Wraps Android's native log framework.
-        LogWrapper logWrapper = new LogWrapper();
-        // Using Log, front-end to the logging chain, emulates android.util.log method signatures.
-        Log.setLogNode(logWrapper);
-
-        // Filter strips out everything except the message text.
-        MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
-        logWrapper.setNext(msgFilter);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                break;
+        }
+        return true;
     }
 }
