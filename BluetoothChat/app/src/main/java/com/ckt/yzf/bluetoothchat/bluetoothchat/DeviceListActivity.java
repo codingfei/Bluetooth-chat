@@ -31,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ckt.yzf.bluetoothchat.R;
 import com.ckt.yzf.bluetoothchat.common.logger.Log;
@@ -60,6 +61,8 @@ public class DeviceListActivity extends Activity {
      */
     private BluetoothAdapter mBtAdapter;
 
+
+
     /**
      * Newly discovered devices
      */
@@ -69,6 +72,7 @@ public class DeviceListActivity extends Activity {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
+    private boolean isAutoRequire = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +109,7 @@ public class DeviceListActivity extends Activity {
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
+
         // Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(mReceiver, filter);
@@ -113,6 +118,12 @@ public class DeviceListActivity extends Activity {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(mReceiver, filter);
 
+        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        this.registerReceiver(mReceiver, filter);
+        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        this.registerReceiver(mReceiver, filter);
         // Get the local Bluetooth adapter
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -186,7 +197,15 @@ public class DeviceListActivity extends Activity {
         }
     };
 
+    private void startChatActivity()
+    {
+
+            Intent intent = new Intent(getApplication(), ConversationActivity.class);
+            startActivity(intent);
+
+    }
     /**
+     *
      * The BroadcastReceiver that listens for discovered devices and changes the title when
      * discovery is finished
      */
@@ -211,7 +230,16 @@ public class DeviceListActivity extends Activity {
                     String noDevices = getResources().getText(R.string.none_found).toString();
                     mNewDevicesArrayAdapter.add(noDevices);
                 }
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED == action) {
+                startChatActivity();
             }
+            else  if (BluetoothDevice.ACTION_ACL_DISCONNECTED == action) {
+                Toast.makeText(getApplication(),"disconnected",Toast.LENGTH_SHORT).show();
+            }
+            else if (BluetoothAdapter.ACTION_STATE_CHANGED == action) {
+                Toast.makeText(getApplication(),"changed",Toast.LENGTH_SHORT).show();
+            }
+
         }
     };
 

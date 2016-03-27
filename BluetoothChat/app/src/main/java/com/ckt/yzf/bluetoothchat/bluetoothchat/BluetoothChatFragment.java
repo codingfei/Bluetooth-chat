@@ -130,6 +130,7 @@ public class BluetoothChatFragment extends Fragment {
         } else if (mChatService == null) {
             setupChat();
         }
+        if(getActivity().getIntent().hasExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS))
         activityRequest(REQUEST_CONNECT_DEVICE_SECURE,Activity.RESULT_OK,getActivity().getIntent());
     }
 
