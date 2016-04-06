@@ -19,6 +19,7 @@ package com.ckt.yzf.bluetoothchat.bluetoothchat;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,8 +45,14 @@ import android.widget.Toast;
 
 import com.ckt.yzf.bluetoothchat.R;
 import com.ckt.yzf.bluetoothchat.assistant.ConversationListAdapter;
+import com.ckt.yzf.bluetoothchat.assistant.SdcardUtils;
 import com.ckt.yzf.bluetoothchat.common.logger.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -328,12 +335,58 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    HashMap<String,Object> map1 = new HashMap<String, Object>();
-                    map1.put("person",OTHER);
-                    map1.put("image",R.drawable.ic_launcher);
-                    map1.put("text",readMessage);
-                    chatList.add(map1);
-                    mConversationArrayAdapter.notifyDataSetChanged();
+                    JSONArray jsonArray = null;
+                    try {
+                        jsonArray = new JSONArray(readMessage);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(readMessage.equals("request_brower"))
+                    {
+                        File MDir = SdcardUtils.getInnerSDcardFile(getContext());
+                        String tmp1= "request_OK";
+                        JSONArray array = new JSONArray();
+                        try {
+                            if (MDir.canRead()) {
+                                File fs[] = MDir.listFiles();
+                                for (File temp : fs) {
+                                    if (temp.getName().startsWith(".")) {
+                                        continue;
+                                    }
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("path", temp.getPath());
+                                    array.put(obj);
+                                }
+                            }
+                            String tmp = array.toString();
+                            byte[] bytes = tmp.getBytes();
+                            browseConnectionFolder(bytes);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else if(jsonArray!=null && jsonArray.length()!=0)
+                    {
+                        Intent intent = new Intent(getActivity(),BrowerConnectedFolder.class);
+//                        try {
+//                            JSONArray jsonArray = new JSONArray(readMessage);
+//                            for(int i=0; i<jsonArray.length(); i++) {
+//                                JSONObject object = (JSONObject) jsonArray.get(i);
+//                                String path = (String) object.get("path");
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        intent.putExtra("paths",readMessage);
+                        startActivity(intent);
+                    }
+                    else {
+                        HashMap<String, Object> map1 = new HashMap<String, Object>();
+                        map1.put("person", OTHER);
+                        map1.put("image", R.drawable.ic_launcher);
+                        map1.put("text", readMessage);
+                        chatList.add(map1);
+                        mConversationArrayAdapter.notifyDataSetChanged();
+                    }
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -398,6 +451,13 @@ public class BluetoothChatFragment extends Fragment {
         mChatService.connect(device, secure);
     }
 
+    private void browseConnectionFolder (byte[] bytes)
+    {
+
+          mChatService.browerFolder(bytes);
+//        Intent intent = new Intent(getActivity(),BrowseConnectionFolder.class);
+//        startActivity(intent);
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.bluetooth_chat, menu);
@@ -421,6 +481,12 @@ public class BluetoothChatFragment extends Fragment {
             case R.id.discoverable: {
                 // Ensure this device is discoverable by others
                 ensureDiscoverable();
+                return true;
+            }
+            case R.id.browsefolder:{
+                String requestBrower = "request_brower";
+                byte[] bytes = requestBrower.getBytes();
+                browseConnectionFolder(bytes);
                 return true;
             }
         }

@@ -61,8 +61,8 @@ public class ConversationActivity extends SampleActivityBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+       // getMenuInflater().inflate(R.menu.main, menu);
+        return false;
     }
 
     @Override
@@ -75,10 +75,14 @@ public class ConversationActivity extends SampleActivityBase {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+             //   finish();
             default:
                 break;
         }
-        return true;
+        return false;
+    }
+    public  void DestoryConversationActivity()
+    {
+        this.finish();
     }
 }

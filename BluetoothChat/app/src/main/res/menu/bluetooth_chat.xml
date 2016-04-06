@@ -30,5 +30,8 @@
         android:id="@+id/discoverable"
         android:showAsAction="never"
         android:title="@string/discoverable"/>
-
+    <item
+        android:id="@+id/browsefolder"
+        android:showAsAction="never"
+        android:title="browsefolder"/>
 </menu>

@@ -73,6 +73,7 @@ public class DeviceListActivity extends Activity {
     private static final int REQUEST_ENABLE_BT = 3;
 
     private boolean isAutoRequire = true;
+    private ConversationActivity conversationActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +153,7 @@ public class DeviceListActivity extends Activity {
         }
 
         // Unregister broadcast listeners
-        this.unregisterReceiver(mReceiver);
+      //  this.unregisterReceiver(mReceiver);
     }
 
     /**
@@ -199,10 +200,9 @@ public class DeviceListActivity extends Activity {
 
     private void startChatActivity()
     {
-
-            Intent intent = new Intent(getApplication(), ConversationActivity.class);
+            conversationActivity = new ConversationActivity();
+            Intent intent = new Intent(getApplication(), conversationActivity.getClass());
             startActivity(intent);
-
     }
     /**
      *
@@ -234,10 +234,11 @@ public class DeviceListActivity extends Activity {
                 startChatActivity();
             }
             else  if (BluetoothDevice.ACTION_ACL_DISCONNECTED == action) {
-                Toast.makeText(getApplication(),"disconnected",Toast.LENGTH_SHORT).show();
+                conversationActivity.finish();
             }
             else if (BluetoothAdapter.ACTION_STATE_CHANGED == action) {
                 Toast.makeText(getApplication(),"changed",Toast.LENGTH_SHORT).show();
+                conversationActivity.finish();
             }
 
         }

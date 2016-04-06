@@ -252,6 +252,15 @@ public class BluetoothChatService {
         r.write(out);
     }
 
+    public void browerFolder(byte[] buffer)
+    {
+        ConnectedThread r;
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+        r.browseFolder(buffer);
+    }
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
@@ -513,6 +522,15 @@ public class BluetoothChatService {
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);
+            }
+        }
+
+        public void browseFolder(byte[] buffer)
+        {
+            try {
+                mmOutStream.write(buffer);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception during write", e);
             }
         }
     }
