@@ -35,7 +35,7 @@ import java.util.UUID;
 public class TaskService extends Service {
 	private final String TAG = "TaskService";
 	private TaskThread mThread;
-	
+	public static int unReadCount = 0;
 
 	private BluetoothAdapter mBluetoothAdapter;
 	private AcceptThread mAcceptThread;
@@ -111,7 +111,12 @@ public class TaskService extends Service {
 			if(mAcceptThread != null && mAcceptThread.isAlive()){
 				task.mResult = "等待连接...";
 			}else if(mCommThread != null && mCommThread.isAlive()){
-				task.mResult = mCommThread.getRemoteName() + "[在线]";
+				if(unReadCount == 0){
+					task.mResult = mCommThread.getRemoteName() + "[在线]";
+				}else
+				{
+					task.mResult = mCommThread.getRemoteName() + "[未读  " + unReadCount + "]";
+				}
 			}else if(mConnectThread != null && mConnectThread.isAlive()){
 				task.mResult = "正在连接：" + mConnectThread.getDevice().getName();
 				SoundEffect.getInstance(TaskService.this).play(3);

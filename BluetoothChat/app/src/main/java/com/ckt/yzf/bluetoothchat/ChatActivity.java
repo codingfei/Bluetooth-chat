@@ -70,7 +70,7 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 	private GridView mGridView;
 	private boolean isUpdate = false;
 	private BluetoothDevice mRemoteDevice;
-	
+	private NotificationManager notificationManager = null;
 	private LinearLayout mRootLayout, mChatLayout;
 	
 	private View mEmoView;
@@ -95,7 +95,7 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.activity_chat);
-		
+		notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
 		if (mBluetoothAdapter == null) {
 			// Device does not support Bluetooth 
@@ -120,12 +120,13 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 			@Override
 			public void onClick(View v) {
 				// 点击输入框后，隐藏表情，显示输入法
-				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
+				TaskService.unReadCount = 0;
+
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(mInput, 0);
 				showEmoPanel(false);
 			}
 		});
-		
 		mSendBtn = (Button) findViewById(R.id.sendBtn);
 		mEmoButton = (ImageView) findViewById(R.id.emotionBtn);
 		
@@ -149,7 +150,14 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		}
 		//---------------------------------------------------------------------
 	}
-	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		TaskService.newTask(new Task(this, Task.TASK_GET_REMOTE_STATE, null));
+		notificationManager.cancel(0);
+	}
+
 	private View initEmoView(){
 		if(mEmoView == null){
 			LayoutInflater inflater = getLayoutInflater();
@@ -177,251 +185,7 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		return mEmoView;
 	}
 	
-	private SimpleAdapter getEmoAdapter(){
-		   HashMap<String, Object> map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo001);
-		   map.put("text", "<emo001>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo002);
-		   map.put("text", "<emo002>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo003);
-		   map.put("text", "<emo003>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo004);
-		   map.put("text", "<emo004>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo005);
-		   map.put("text", "<emo005>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo006);
-		   map.put("text", "<emo006>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo007);
-		   map.put("text", "<emo007>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo008);
-		   map.put("text", "<emo008>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo009);
-		   map.put("text", "<emo009>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo010);
-		   map.put("text", "<emo010>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo011);
-		   map.put("text", "<emo011>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo012);
-		   map.put("text", "<emo012>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo013);
-		   map.put("text", "<emo013>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo014);
-		   map.put("text", "<emo014>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo015);
-		   map.put("text", "<emo015>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo016);
-		   map.put("text", "<emo016>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo017);
-		   map.put("text", "<emo017>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo018);
-		   map.put("text", "<emo018>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo019);
-		   map.put("text", "<emo019>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo020);
-		   map.put("text", "<emo020>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo021);
-		   map.put("text", "<emo021>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo022);
-		   map.put("text", "<emo022>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo023);
-		   map.put("text", "<emo023>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo024);
-		   map.put("text", "<emo024>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo025);
-		   map.put("text", "<emo025>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo026);
-		   map.put("text", "<emo026>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo027);
-		   map.put("text", "<emo027>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo028);
-		   map.put("text", "<emo028>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo029);
-		   map.put("text", "<emo029>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo030);
-		   map.put("text", "<emo030>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo031);
-		   map.put("text", "<emo031>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo032);
-		   map.put("text", "<emo032>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo033);
-		   map.put("text", "<emo033>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo034);
-		   map.put("text", "<emo034>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo035);
-		   map.put("text", "<emo035>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo036);
-		   map.put("text", "<emo036>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo037);
-		   map.put("text", "<emo037>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo038);
-		   map.put("text", "<emo038>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo039);
-		   map.put("text", "<emo039>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo040);
-		   map.put("text", "<emo040>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo041);
-		   map.put("text", "<emo041>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo042);
-		   map.put("text", "<emo042>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo043);
-		   map.put("text", "<emo043>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo044);
-		   map.put("text", "<emo044>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo045);
-		   map.put("text", "<emo045>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo046);
-		   map.put("text", "<emo046>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo047);
-		   map.put("text", "<emo047>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo048);
-		   map.put("text", "<emo048>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo049);
-		   map.put("text", "<emo049>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo050);
-		   map.put("text", "<emo050>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo051);
-		   map.put("text", "<emo051>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo052);
-		   map.put("text", "<emo052>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo053);
-		   map.put("text", "<emo053>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo054);
-		   map.put("text", "<emo054>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo055);
-		   map.put("text", "<emo055>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo056);
-		   map.put("text", "<emo056>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo057);
-		   map.put("text", "<emo057>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo058);
-		   map.put("text", "<emo058>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo059);
-		   map.put("text", "<emo059>");
-		   mEmoList.add(map);
-		   map = new HashMap<String, Object>();
-		   map.put("img", R.drawable.emo060);
-		   map.put("text", "<emo060>");
-		   mEmoList.add(map);
 
-		return new SimpleAdapter(this, mEmoList, R.layout.grid_view_item, 
-					new String[]{"img"}, new int[]{R.id.imageView});
-	}
 	
 	private void startServiceAsServer(){
 		startService(new Intent(this, TaskService.class));
@@ -571,8 +335,10 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 					return;
 				HashMap<String, Object> data = (HashMap<String, Object>) msg.obj;
 				if (ChatActivity.isApplicationBrought(getApplicationContext())) {
+					TaskService.unReadCount++;
 					Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-					PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), (int)System.currentTimeMillis(), intent, 0);
+
+					PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), (int) System.currentTimeMillis(), intent, 0);
 
 					Notification myNotification  = new Notification.Builder(getApplicationContext())
 							.setContentTitle("BlueChat")
@@ -580,10 +346,6 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 							.setSmallIcon(R.drawable.hkc)
 							.setContentIntent(pIntent)
 							.setAutoCancel(true).build();
-
-
-					NotificationManager notificationManager =
-							(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 					notificationManager.notify(0, myNotification);
 				}
@@ -766,5 +528,250 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		Toast tst = Toast.makeText(this, msg, Toast.LENGTH_LONG);
 		tst.setGravity(Gravity.CENTER | Gravity.TOP, 0, 240);
 		tst.show();
+	}
+	private SimpleAdapter getEmoAdapter(){
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo001);
+		map.put("text", "<emo001>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo002);
+		map.put("text", "<emo002>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo003);
+		map.put("text", "<emo003>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo004);
+		map.put("text", "<emo004>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo005);
+		map.put("text", "<emo005>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo006);
+		map.put("text", "<emo006>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo007);
+		map.put("text", "<emo007>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo008);
+		map.put("text", "<emo008>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo009);
+		map.put("text", "<emo009>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo010);
+		map.put("text", "<emo010>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo011);
+		map.put("text", "<emo011>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo012);
+		map.put("text", "<emo012>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo013);
+		map.put("text", "<emo013>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo014);
+		map.put("text", "<emo014>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo015);
+		map.put("text", "<emo015>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo016);
+		map.put("text", "<emo016>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo017);
+		map.put("text", "<emo017>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo018);
+		map.put("text", "<emo018>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo019);
+		map.put("text", "<emo019>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo020);
+		map.put("text", "<emo020>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo021);
+		map.put("text", "<emo021>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo022);
+		map.put("text", "<emo022>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo023);
+		map.put("text", "<emo023>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo024);
+		map.put("text", "<emo024>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo025);
+		map.put("text", "<emo025>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo026);
+		map.put("text", "<emo026>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo027);
+		map.put("text", "<emo027>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo028);
+		map.put("text", "<emo028>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo029);
+		map.put("text", "<emo029>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo030);
+		map.put("text", "<emo030>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo031);
+		map.put("text", "<emo031>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo032);
+		map.put("text", "<emo032>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo033);
+		map.put("text", "<emo033>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo034);
+		map.put("text", "<emo034>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo035);
+		map.put("text", "<emo035>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo036);
+		map.put("text", "<emo036>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo037);
+		map.put("text", "<emo037>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo038);
+		map.put("text", "<emo038>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo039);
+		map.put("text", "<emo039>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo040);
+		map.put("text", "<emo040>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo041);
+		map.put("text", "<emo041>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo042);
+		map.put("text", "<emo042>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo043);
+		map.put("text", "<emo043>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo044);
+		map.put("text", "<emo044>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo045);
+		map.put("text", "<emo045>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo046);
+		map.put("text", "<emo046>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo047);
+		map.put("text", "<emo047>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo048);
+		map.put("text", "<emo048>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo049);
+		map.put("text", "<emo049>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo050);
+		map.put("text", "<emo050>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo051);
+		map.put("text", "<emo051>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo052);
+		map.put("text", "<emo052>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo053);
+		map.put("text", "<emo053>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo054);
+		map.put("text", "<emo054>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo055);
+		map.put("text", "<emo055>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo056);
+		map.put("text", "<emo056>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo057);
+		map.put("text", "<emo057>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo058);
+		map.put("text", "<emo058>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo059);
+		map.put("text", "<emo059>");
+		mEmoList.add(map);
+		map = new HashMap<String, Object>();
+		map.put("img", R.drawable.emo060);
+		map.put("text", "<emo060>");
+		mEmoList.add(map);
+
+		return new SimpleAdapter(this, mEmoList, R.layout.grid_view_item,
+				new String[]{"img"}, new int[]{R.id.imageView});
 	}
 }
