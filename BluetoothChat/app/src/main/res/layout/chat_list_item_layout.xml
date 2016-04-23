@@ -20,6 +20,7 @@
         android:id="@+id/tvText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textIsSelectable="true"
         style="@style/style_chat_text"/>
 
 </RelativeLayout>
