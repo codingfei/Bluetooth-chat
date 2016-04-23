@@ -203,6 +203,7 @@ public class TaskService extends Service {
 			while (true) { 
 				try {       
 					// 阻塞等待
+					if(mmServerSocket != null)
 					socket = mmServerSocket.accept();
 				} catch (IOException e) {
 					if(!isCancel){

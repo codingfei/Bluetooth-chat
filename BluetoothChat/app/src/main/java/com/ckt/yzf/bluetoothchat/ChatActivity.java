@@ -1,10 +1,15 @@
 package com.ckt.yzf.bluetoothchat;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -49,7 +54,7 @@ import com.ckt.yzf.bluetoothchat.task.TaskService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 
 public class ChatActivity extends Activity implements View.OnClickListener,Task.CallBack {
@@ -98,8 +103,8 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 			Toast.makeText(this, "该设备没有蓝牙设备", Toast.LENGTH_LONG).show();
 			return;
 		}
-		
-		
+
+
 		mRootLayout = (LinearLayout) findViewById(R.id.root);
 		mChatLayout = (LinearLayout) findViewById(R.id.topPanel);
 		mList = (ListView) findViewById(R.id.listView1);
@@ -108,35 +113,8 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		
 		mList.setAdapter(mAdapter2);
 		
-		/*mList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				System.out.println(view.getId());
-				System.out.println(R.id.tvText);
-				if(view.getId() == R.id.tvText){
-					showToast("textview clickedf");
-				}
-				if((Boolean) mChatContent2.get(position).get(ChatListViewAdapter.KEY_PRIVATE)){
-					mChatContent2.get(position).put(ChatListViewAdapter.KEY_PRIVATE, false);
-				}else{
-					mChatContent2.get(position).put(ChatListViewAdapter.KEY_PRIVATE, true);
-				}
-			}
-		});*/
-		
-		// 初始化表情
 		mEmoView = initEmoView();
-		
-/*		mSndFileBtn = (Button) findViewById(R.id.sndFile);
-		mSndFileBtn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				TaskService.newTask(new Task(ChatActivity.this, Task.TASK_SEND_FILE, new Object[]{"/storage/sdcard0/Vlog.xml"}));
-			}
-		});*/
-		
-		
+
 		mInput = (EditText) findViewById(R.id.inputEdit);
 		mInput.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -440,20 +418,7 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		   map.put("img", R.drawable.emo060);
 		   map.put("text", "<emo060>");
 		   mEmoList.add(map);
-		   
-		   /**
-		    * 上述添加表情效率高，但是代码太冗余，下面的方式代码简单，但是效率较低
-		    */
-		   /*
-		   HashMap<String, Integer> map;
-		   for(int i = 0; i < 100; i++){
-			   map = new HashMap<String, Integer>();
-			   Field field=R.drawable.class.getDeclaredField("image"+i);  
-			   int resourceId=Integer.parseInt(field.get(null).toString());
-			   map.put("img", resourceId);
-			   mEmoList.add(map);
-		   }
-		   */
+
 		return new SimpleAdapter(this, mEmoList, R.layout.grid_view_item, 
 					new String[]{"img"}, new int[]{R.id.imageView});
 	}
@@ -605,6 +570,23 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 				if(msg.obj == null)
 					return;
 				HashMap<String, Object> data = (HashMap<String, Object>) msg.obj;
+				if (ChatActivity.isApplicationBrought(getApplicationContext())) {
+					Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+					PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), (int)System.currentTimeMillis(), intent, 0);
+
+					Notification myNotification  = new Notification.Builder(getApplicationContext())
+							.setContentTitle("BlueChat")
+							.setContentText(data.get("text").toString())
+							.setSmallIcon(R.drawable.hkc)
+							.setContentIntent(pIntent)
+							.setAutoCancel(true).build();
+
+
+					NotificationManager notificationManager =
+							(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+					notificationManager.notify(0, myNotification);
+				}
 				SimpleDateFormat df1 = new SimpleDateFormat("E MM月dd日 yy HH:mm ");
 				data.put(ChatListViewAdapter.KEY_DATE, df1.format(System.currentTimeMillis()).toString());
 				data.put(ChatListViewAdapter.KEY_SHOW_MSG, true);
@@ -766,7 +748,20 @@ public class ChatActivity extends Activity implements View.OnClickListener,Task.
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
+	public static boolean isApplicationBrought(final Context context)
+	{
+		ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+		if(!tasks.isEmpty())
+		{
+			ComponentName topActivity = tasks.get(0).topActivity;
+			if(!topActivity.getPackageName().equals(context.getPackageName())){
+				return true;
+			}
+		}
+		return false;
+	}
 	private void showToast(String msg){
 		Toast tst = Toast.makeText(this, msg, Toast.LENGTH_LONG);
 		tst.setGravity(Gravity.CENTER | Gravity.TOP, 0, 240);
